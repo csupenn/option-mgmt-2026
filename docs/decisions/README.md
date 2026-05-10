@@ -9,6 +9,9 @@ Locked decisions for the option-mgmt-2026 codebase. Each ADR is short (1 page) a
 | [0001](./0001-engine-first-architecture.md) | Engine-first architecture | Accepted | v1.2 §1 + §5 |
 | [0002](./0002-regime-taxonomy.md) | Regime taxonomy locked to 6 regimes | Accepted | v1.2 §9.1 + §22 |
 | [0003](./0003-confidence-composer-multiplicative.md) | Confidence Composer uses multiplicative penalties | Accepted | v1.2 §22.13 |
+| [0004](./0004-disclaimer-fail-open.md) | Disclaimer gate fails open under storage errors | Accepted | v1.2 §15 |
+| [0005](./0005-engine-pure-function-discipline.md) | `packages/engine` pure-function discipline (no I/O) | Accepted | v1.2 §1 + §5 + §16 |
+| [0006](./0006-rfc-7807-error-envelope.md) | RFC 7807 ProblemDetails as universal API error shape | Accepted | v1.2 §7 |
 
 ## Adding an ADR
 
