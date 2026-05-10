@@ -42,7 +42,7 @@ v1.2 §9.3 step 1 (OI walls) + step 4 (dealer-gamma proxy), §17 M1.5 (size M), 
 - **M1.5a** — `scoring.gamma_score()` pure fn + tests. Lands separately as a scoring primitive.
 - **M1.5b** — Flow Score Engine `compute()` orchestrator returning the full §9.3a V1 contract (bullish/bearish/score/bias/pin_probability/gamma_risk/recommended_action/explanation). Requires M1.5a's `gamma_score`.
 
-PR: [#TBD](https://github.com/csupenn/option-mgmt-2026/pulls)
+PR: [#32](https://github.com/csupenn/option-mgmt-2026/pull/32)
 
 ---
 
