@@ -57,7 +57,7 @@ CI guard `scripts/check_engine_version_bump.sh` enforces a version bump on every
 
 v1.2 §22.3 (extended 18-input signature), §9.2 (per-regime predicate sketches with the §22-noted scale + sign-error corrections), §17 M1.4 (size L, 24 regime fixtures), §22.5 (`clip01` reuse), §22.13 (`MarketStateResult` echoed inputs power Confidence Composer breakdowns).
 
-PR: [#TBD](https://github.com/csupenn/option-mgmt-2026/pulls)
+PR: [#29](https://github.com/csupenn/option-mgmt-2026/pull/29)
 
 ---
 
