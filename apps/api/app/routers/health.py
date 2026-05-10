@@ -10,7 +10,7 @@ Both /health and /healthz exist per v1.2 §22.7 ("New endpoints (Phase 1)" table
 from __future__ import annotations
 
 import time
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
@@ -31,7 +31,7 @@ SessionDep = Annotated[AsyncSession, Depends(get_session)]
 _BOOT_TIME = time.monotonic()
 
 
-async def _db_status(session: AsyncSession) -> str:
+async def _db_status(session: AsyncSession) -> Literal["ok", "degraded"]:
     """Return 'ok' if the DB responds to SELECT 1, else 'degraded'."""
     try:
         await session.execute(text("SELECT 1"))
