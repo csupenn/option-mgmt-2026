@@ -122,16 +122,18 @@ def skew_25d(
             continue
 
         # Find 25-delta call: minimize |Δ_c − 0.25|. Tie-break by lower
-        # strike for determinism.
-        def _call_delta_dist(c: OptionContract) -> tuple[float, float]:
-            assert c.iv is not None and c.iv > 0.0  # noqa: S101
-            return (
+        # strike for determinism. We materialize `(distance, strike, contract)`
+        # tuples eagerly inside the loop body — this avoids the late-binding
+        # closure-over-loop-variable footgun (ruff B023) that arises if the
+        # `key` function captures `tau` lexically.
+        call_dists = [
+            (
                 abs(
                     delta(
                         spot=spot,
                         strike=c.strike,
                         tau=tau,
-                        iv=c.iv,
+                        iv=c.iv if c.iv is not None else 0.0,
                         r=risk_free_rate,
                         q=dividend_yield,
                         option_type=OptionType.CALL,
@@ -139,17 +141,18 @@ def skew_25d(
                     - _CALL_DELTA_TARGET
                 ),
                 c.strike,
+                c,
             )
-
-        def _put_delta_dist(c: OptionContract) -> tuple[float, float]:
-            assert c.iv is not None and c.iv > 0.0  # noqa: S101
-            return (
+            for c in calls
+        ]
+        put_dists = [
+            (
                 abs(
                     delta(
                         spot=spot,
                         strike=c.strike,
                         tau=tau,
-                        iv=c.iv,
+                        iv=c.iv if c.iv is not None else 0.0,
                         r=risk_free_rate,
                         q=dividend_yield,
                         option_type=OptionType.PUT,
@@ -157,10 +160,12 @@ def skew_25d(
                     - _PUT_DELTA_TARGET
                 ),
                 c.strike,
+                c,
             )
-
-        call_25d = min(calls, key=_call_delta_dist)
-        put_25d = min(puts, key=_put_delta_dist)
+            for c in puts
+        ]
+        call_25d = min(call_dists, key=lambda t: (t[0], t[1]))[2]
+        put_25d = min(put_dists, key=lambda t: (t[0], t[1]))[2]
 
         # mypy: iv is `float | None` on `OptionContract`; we filtered to
         # `iv > 0` above so the asserts are statically obvious but mypy
