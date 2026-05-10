@@ -28,9 +28,22 @@ Why a custom generator (not pydantic-to-typescript)?
 from __future__ import annotations
 
 import sys
+import types
+import typing
 from enum import EnumMeta as EnumType  # EnumMeta is the portable alias (== EnumType in 3.11+)
 from pathlib import Path
 from typing import Any, get_args, get_origin
+
+# `typing.Union` and `types.UnionType` (3.10+) are both valid origins for a
+# union annotation, depending on Python version + how the annotation was written:
+#   * Python 3.9:  Union[X, Y] / X | Y both surface as `typing.Union`
+#   * Python 3.10+: X | Y produces `types.UnionType`; Union[X, Y] keeps `typing.Union`
+#   * Python 3.14: typing.Union became a class (PEP changes); `str(origin)` is now
+#                  `"<class 'typing.Union'>"` not `"typing.Union"`. Using `is` /
+#                  `in` against the singleton is the version-stable check.
+_UNION_ORIGINS: tuple[Any, ...] = (typing.Union,)
+if hasattr(types, "UnionType"):
+    _UNION_ORIGINS = _UNION_ORIGINS + (types.UnionType,)
 
 # Make `engine` importable when invoked from the repo root or any nested dir.
 _REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -85,8 +98,8 @@ def _ts_type(annotation: Any) -> str:
         # Fallback — explicit so unhandled types fail loudly.
         raise TypeError(f"unhandled annotation: {annotation!r}")
 
-    # Union (X | Y, X | None)
-    if str(origin) == "typing.Union" or origin.__class__.__name__ == "UnionType":
+    # Union (X | Y, X | None) — see _UNION_ORIGINS for cross-version rationale.
+    if origin in _UNION_ORIGINS:
         rendered = sorted({_ts_type(a) for a in args if a is not type(None)})
         if type(None) in args:
             return f"{' | '.join(rendered)} | null"
