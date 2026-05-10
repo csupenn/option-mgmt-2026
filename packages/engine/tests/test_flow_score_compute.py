@@ -8,8 +8,6 @@ from __future__ import annotations
 from datetime import date
 
 import pytest
-from engine.scoring import GammaScoreResult, OiWalls
-from engine.types import ChainSnapshot, OptionContract, OptionType
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -30,6 +28,8 @@ from engine.flow_score.compute import (
     _oi_concentration_at_max_pain,
     _volume_shares,
 )
+from engine.scoring import GammaScoreResult, OiWalls
+from engine.types import ChainSnapshot, OptionContract, OptionType
 
 # ----------------------------------------------------------------------
 # helpers — build small but realistic chains
