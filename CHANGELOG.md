@@ -47,7 +47,7 @@ CI guard `scripts/check_engine_version_bump.sh` enforces a version bump on every
 
 v1.2 §9.11 (Scoring Functions Module — `gamma_score` signature & wiring), §17 M1.5a (size S, 100% coverage acceptance), §22.5 (clip01 reuse), §22.13 (breakdown for Confidence Composer), ADR-0008 (Phase 1.5 E1 GEX replaces the V1 proxy + introduces real `GammaWall` producers).
 
-PR: [#TBD](https://github.com/csupenn/option-mgmt-2026/pulls)
+PR: [#33](https://github.com/csupenn/option-mgmt-2026/pull/33)
 
 ---
 
