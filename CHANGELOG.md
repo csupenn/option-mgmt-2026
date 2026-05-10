@@ -49,7 +49,7 @@ CI guard `scripts/check_engine_version_bump.sh` enforces a version bump on every
 
 v1.2 §9.11 (Scoring Functions Module spec), §17 M1.4a (size M), §22.5 (`clip01` reuse), §22.13 (breakdown for Confidence Composer).
 
-PR: [#TBD](https://github.com/csupenn/option-mgmt-2026/pulls)
+PR: [#28](https://github.com/csupenn/option-mgmt-2026/pull/28)
 
 ---
 
