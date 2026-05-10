@@ -5,11 +5,11 @@ from __future__ import annotations
 from datetime import date
 
 import pytest
-from engine.types import OptionContract, OptionType
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from engine.flow_score import compute_dealer_gamma_proxy
+from engine.types import OptionContract, OptionType
 
 # ----------------------------------------------------------------------
 # helpers

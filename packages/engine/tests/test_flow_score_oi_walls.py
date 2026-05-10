@@ -6,12 +6,12 @@ from datetime import date
 from typing import Any
 
 import pytest
-from engine.scoring import OiWalls
-from engine.types import OptionContract, OptionType
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from engine.flow_score import compute_oi_walls
+from engine.scoring import OiWalls
+from engine.types import OptionContract, OptionType
 
 # ----------------------------------------------------------------------
 # helpers
