@@ -18,11 +18,11 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from engine.regimes import Regime
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from engine.market_state import MarketStateResult, classify
+from engine.regimes import Regime
 
 # ----------------------------------------------------------------------
 # Helpers — neutral baseline + per-test override pattern
