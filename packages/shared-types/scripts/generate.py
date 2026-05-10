@@ -213,6 +213,19 @@ def main() -> int:
             if existing != new:
                 drift = True
                 print(f"DRIFT: {target.relative_to(_REPO_ROOT)}", file=sys.stderr)
+                # Emit a unified diff so CI logs show exactly what differs.
+                # Without this, debugging a drift failure means re-running locally.
+                import difflib
+
+                for line in difflib.unified_diff(
+                    existing.splitlines(keepends=True),
+                    new.splitlines(keepends=True),
+                    fromfile=f"{target.name} (committed)",
+                    tofile=f"{target.name} (regenerated)",
+                    n=3,
+                ):
+                    sys.stderr.write(line)
+                sys.stderr.write("\n")
         else:
             target.write_text(new)
             print(f"wrote {target.relative_to(_REPO_ROOT)}")
