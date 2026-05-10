@@ -60,15 +60,16 @@ jobs:
         uses: astral-sh/setup-uv@v3
         with:
           # Cache key includes pyproject + uv.lock when present. Once we commit
-          # apps/api/uv.lock (planned M0.7+), CI builds become bit-reproducible.
+          # apps/api/uv.lock (planned post-M0.7), CI builds become bit-reproducible.
           enable-cache: true
           cache-dependency-glob: |
             apps/api/pyproject.toml
             apps/api/uv.lock
-          # Python pin per docs/decisions/0007-python-version-pin.md (3.13).
-          python-version: '3.13'
 
       - name: Install Python deps
+        # uv reads apps/api/.python-version (3.14) and apps/api/pyproject.toml's
+        # requires-python = ">=3.14" to select the interpreter. uv downloads
+        # the toolchain if the runner doesn't have it. Per ADR-0007.
         run: uv sync --dev
 
       - name: Ruff lint

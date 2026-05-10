@@ -25,7 +25,7 @@ Long equity + tactical options overlay. Deterministic, audit-trail-first, engine
 
 | Layer | Pin | Source of truth |
 |---|---|---|
-| Python | **3.13** ([ADR-0007](./docs/decisions/0007-python-version-pin.md)) | `apps/api/.python-version`, `pyproject.toml`, `apps/api/Dockerfile` |
+| Python | **3.14** ([ADR-0007](./docs/decisions/0007-python-version-pin.md)) | `apps/api/.python-version`, `pyproject.toml`, `apps/api/Dockerfile` |
 | Next.js | **16.2.6** ([ADR § plan v1.2 §22.1](./docs/ssot-constants-map.md)) | `apps/web/package.json` + `scripts/check_next_version.sh` |
 | React | `^19.0.0` (paired with Next 16) | `apps/web/package.json` |
 | Node | `22.x` (web runtime) | `apps/web/Dockerfile` |

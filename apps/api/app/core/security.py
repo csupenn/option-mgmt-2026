@@ -11,7 +11,7 @@ downstream modules (deps.py, routers/health.py) can depend on them.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from argon2 import PasswordHasher
@@ -45,7 +45,7 @@ def create_access_token(*, subject: str, extra: dict[str, Any] | None = None) ->
     (sub, iat, exp) cannot be overridden via extra.
     """
     settings = get_settings()
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     payload: dict[str, Any] = dict(extra or {})
     payload.update(
         {

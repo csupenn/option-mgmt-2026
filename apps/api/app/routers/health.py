@@ -10,6 +10,7 @@ Both /health and /healthz exist per v1.2 §22.7 ("New endpoints (Phase 1)" table
 from __future__ import annotations
 
 import time
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
@@ -20,6 +21,11 @@ from app.db.session import get_session
 from app.schemas.health import HealthResponse, VersionResponse
 
 router = APIRouter(tags=["system"])
+
+# Annotated dependency aliases — modern FastAPI idiom (>=0.95). Avoids
+# B008 (Depends in argument defaults) per docs/engineering-principles.md.
+SettingsDep = Annotated[Settings, Depends(get_settings)]
+SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 # Process-level boot time (monotonic so it survives wall-clock changes).
 _BOOT_TIME = time.monotonic()
@@ -36,10 +42,7 @@ async def _db_status(session: AsyncSession) -> str:
 
 @router.get("/health", response_model=HealthResponse)
 @router.get("/healthz", response_model=HealthResponse)
-async def health(
-    settings: Settings = Depends(get_settings),
-    session: AsyncSession = Depends(get_session),
-) -> HealthResponse:
+async def health(settings: SettingsDep, session: SessionDep) -> HealthResponse:
     return HealthResponse(
         status="ok",
         uptime_seconds=int(time.monotonic() - _BOOT_TIME),
@@ -51,7 +54,7 @@ async def health(
 
 
 @router.get("/version", response_model=VersionResponse)
-async def version(settings: Settings = Depends(get_settings)) -> VersionResponse:
+async def version(settings: SettingsDep) -> VersionResponse:
     return VersionResponse(
         version=settings.api_version,
         engine_version=settings.engine_version,

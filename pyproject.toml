@@ -2,7 +2,7 @@
 name = "option-mgmt-2026"
 version = "0.0.1"
 description = "MSFT Option Risk Management Engine — monorepo root"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 
 # This file declares the uv workspace root. It is not a publishable package
 # itself; member packages live under apps/ and packages/.
@@ -17,7 +17,7 @@ members = [
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "N", "W"]
@@ -28,7 +28,7 @@ quote-style = "double"
 indent-style = "space"
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.14"
 strict = true
 ignore_missing_imports = true
 plugins = []
