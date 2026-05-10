@@ -16,7 +16,7 @@ Long equity + tactical options overlay. Deterministic, audit-trail-first, engine
 | ✅ | M0.4 — Next.js 16.2.6 shell, Disclaimer gate, Tailwind, Vitest | [#4](https://github.com/csupenn/option-mgmt-2026/pull/4) |
 | ✅ | docs foundation + 6 ADRs (engineering principles + architecture + SSOT map) | [#5](https://github.com/csupenn/option-mgmt-2026/pull/5) |
 | ✅ | M0.5 — CI pipelines + pre-commit + Dependabot + policy guards | [#6](https://github.com/csupenn/option-mgmt-2026/pull/6) |
-| 🟡 | M0.6 — Engine types: regimes, profiles, ChainSnapshot, TS type generation | [#7](https://github.com/csupenn/option-mgmt-2026/pull/7) (open) |
+| 🟡 | M0.6 — Engine types: regimes, profiles, ChainSnapshot, TS type generation | [#17](https://github.com/csupenn/option-mgmt-2026/pull/17) (open) |
 | ⬜ | M0.7 — End-to-end smoke test | — |
 
 **Phase 1 (engine MVP)** starts after M0.7. See the v1.2 plan for the full 5-phase roadmap; section §22 is the canonical correction sheet.
