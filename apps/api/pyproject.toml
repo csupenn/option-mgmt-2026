@@ -2,7 +2,7 @@
 name = "option-mgmt-api"
 version = "0.0.1"
 description = "MSFT Option Risk Management Engine — FastAPI service"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.115",
     "uvicorn[standard]>=0.30",
@@ -39,7 +39,7 @@ asyncio_mode = "auto"
 # This block exists so `uv run ruff check .` from apps/api/ uses consistent settings
 # even when the user invokes ruff from this directory.
 line-length = 100
-target-version = "py312"
+target-version = "py313"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "N", "W"]
@@ -49,7 +49,7 @@ ignore = ["E501"]
 "tests/*" = ["E402"]  # late imports for env-var setup before app.main load
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.13"
 strict = true
 ignore_missing_imports = true
 plugins = []

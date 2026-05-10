@@ -59,8 +59,14 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v3
         with:
+          # Cache key includes pyproject + uv.lock when present. Once we commit
+          # apps/api/uv.lock (planned M0.7+), CI builds become bit-reproducible.
           enable-cache: true
-          cache-dependency-glob: 'apps/api/pyproject.toml'
+          cache-dependency-glob: |
+            apps/api/pyproject.toml
+            apps/api/uv.lock
+          # Python pin per docs/decisions/0007-python-version-pin.md (3.13).
+          python-version: '3.13'
 
       - name: Install Python deps
         run: uv sync --dev
@@ -99,11 +105,14 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
-          cache-dependency-path: 'apps/web/pnpm-lock.yaml'
+          # Workspace pnpm-lock.yaml lives at the repo root, NOT under apps/web
+          # — a single workspace lockfile covers all apps/ + packages/ members.
+          cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: Install web deps
-        # --no-frozen-lockfile until apps/web/pnpm-lock.yaml is committed (M0.5+ follow-up).
-        run: pnpm install --no-frozen-lockfile
+        # --frozen-lockfile fails if pnpm-lock.yaml doesn't match package.json
+        # — exactly what we want in CI: drift detection.
+        run: pnpm install --frozen-lockfile
 
       - name: ESLint
         run: pnpm lint
