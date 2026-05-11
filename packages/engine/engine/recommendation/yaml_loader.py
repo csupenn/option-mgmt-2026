@@ -32,7 +32,7 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
-import yaml  # type: ignore[import-untyped]
+import yaml
 
 from engine.recommendation.rules import supported_clauses
 from engine.recommendation.types import EmittedAction, RuleSpec
