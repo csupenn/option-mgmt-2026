@@ -37,3 +37,4 @@ export interface UserStrategyProfile {
   drawdown_tolerance?: number;
   style?: ProfileStyle;
 }
+
