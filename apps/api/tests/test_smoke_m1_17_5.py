@@ -251,8 +251,17 @@ async def test_daily_plan_no_inputs_full_csv_flow_smoke(
     )
     assert r.status_code == 200, r.text
 
-    # 4. Call daily-plan WITHOUT inputs → hydration → engine → persist
-    body = {"ticker": _TICKER, "persist": True}
+    # 4. Call daily-plan WITHOUT inputs → hydration → engine → persist.
+    #    IMPORTANT: pin `as_of` to a fixed value so the idempotency check
+    #    in step 5 isn't defeated by clock drift. Without `as_of` the
+    #    service defaults to datetime.now(UTC), which differs by ~ms
+    #    between calls — distinct inputs_hash per call, no ON CONFLICT.
+    #    Same pattern as the M1.14 _daily_plan_body() fixture.
+    body = {
+        "ticker": _TICKER,
+        "as_of": "2026-05-20T14:30:00+00:00",
+        "persist": True,
+    }
     r = await http.post("/engine/daily-plan", json=body, headers=auth_headers)
     assert r.status_code == 200, r.text
     body1 = r.json()
@@ -263,8 +272,8 @@ async def test_daily_plan_no_inputs_full_csv_flow_smoke(
     assert decision["engine_version"]
     assert decision["weights_version"] == "v2.0"
 
-    # 5. Idempotency: call again with same body. Same hydration → same
-    #    inputs_hash → ON CONFLICT fires → is_new_row=False.
+    # 5. Idempotency: call again with same body (same as_of → same inputs_hash
+    #    → ON CONFLICT fires → is_new_row=False).
     r = await http.post("/engine/daily-plan", json=body, headers=auth_headers)
     assert r.status_code == 200, r.text
     body2 = r.json()
