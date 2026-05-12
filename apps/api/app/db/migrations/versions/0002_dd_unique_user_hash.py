@@ -1,8 +1,13 @@
 """daily_decisions: UNIQUE(user_id, inputs_hash) for idempotent persistence
 
-Revision ID: 0002_daily_decisions_unique_inputs_hash
+Revision ID: 0002_dd_unique_user_hash
 Revises: 0001_init
 Create Date: 2026-05-12
+
+NOTE: The revision id is intentionally short (24 chars). Alembic's
+`alembic_version.version_num` column is VARCHAR(32) by default; longer
+ids fail with StringDataRightTruncation on the
+`UPDATE alembic_version SET version_num=...` step.
 
 Per plan v1.2 §7 (Idempotency & replay):
 
@@ -37,7 +42,7 @@ from collections.abc import Sequence
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "0002_daily_decisions_unique_inputs_hash"
+revision: str = "0002_dd_unique_user_hash"
 down_revision: str | Sequence[str] | None = "0001_init"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
