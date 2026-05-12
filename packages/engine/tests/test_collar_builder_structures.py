@@ -41,20 +41,16 @@ class TestZeroCostSolver:
         assert abs(zc.net_debit_credit) <= ZERO_COST_TOLERANCE
 
     def test_no_solution_below_tolerance_returns_empty(self) -> None:
-        """A chain with widely-mismatched premiums yields no zero-cost
-        candidate; solver returns an empty list (not exception)."""
+        """When `drawdown_tolerance` excludes EVERY put in the chain,
+        the zero-cost solver has no protective leg to pair → returns
+        an empty list (not an exception)."""
         kwargs = _kwargs()
-        # Use a deep-OTM-only chain: low-premium puts can't be paired
-        # with low-premium calls within ±$0.10 because available
-        # in-band calls are pricier.
-        # (Easier: bump drawdown_tolerance so 380P doesn't qualify,
-        # leaving only 360/370 puts which mismatch the call mids.)
-        kwargs["profile"] = seed_profile(drawdown_tolerance=0.08)  # 8%, excludes 380
+        # Bump drawdown_tolerance above the deepest available put's
+        # protection (360P → 10%). With min_protection = 0.11, no put
+        # qualifies for the protective floor; the solver yields no
+        # pairs at all.
+        kwargs["profile"] = seed_profile(drawdown_tolerance=0.11)
         results = build(**kwargs, intents=[CollarIntent.ZERO_COST])
-        # 370 put @ 0.80 vs 420 call @ 1.00 → diff 0.20 > 0.10 tolerance
-        # 360 put @ 0.50 vs 420 call @ 1.00 → diff 0.50 > 0.10 tolerance
-        # 370 put @ 0.80 vs 430 call @ 0.40 → diff 0.40 > 0.10 tolerance
-        # No pair within ±$0.10 → expect empty.
         assert results == []
 
 
