@@ -81,7 +81,9 @@ class TestDefaults:
     def test_default_intents_are_all_three(self) -> None:
         """When `intents=None`, build() considers all three intents.
         With the seed chain, all three should yield a feasible structure."""
-        result = build(**_kwargs_default(), underlying_qty=200)
+        kwargs = _kwargs_default()
+        kwargs["underlying_qty"] = 200  # 2 contracts → both ZERO_COST + DEFENSIVE pairs feasible
+        result = build(**kwargs)
         intents = {s.intent for s in result}
         # At minimum, ZERO_COST should be feasible on the seed chain.
         assert CollarIntent.ZERO_COST in intents

@@ -83,20 +83,23 @@ def seed_chain() -> ChainSnapshot:
     INCOME band   [0.30, 0.40]: 410 + 420 in band.
     DEFENSIVE band [0.15, 0.25]: 430 in band.
     """
+    # 1-cent spreads (0.005 each side) on every leg so spread_bps stays
+    # below the M1.11 §9.8 cap of 300 even on the cheaper OTM options.
+    # The mid-prices are set so the three solvers each find a clean
+    # winning pair (see helpers docstring).
     contracts: tuple[OptionContract, ...] = (
         # PUTs — protective floors; lower strikes = deeper protection.
-        # Spreads kept ≤ 2c to stay above M1.11 liquidity floor.
-        _put(strike=360.0, bid=0.49, ask=0.51),  # mid 0.50; 10% protection
-        _put(strike=370.0, bid=0.79, ask=0.81),  # mid 0.80;  7.5% protection
-        _put(strike=380.0, bid=0.99, ask=1.01),  # mid 1.00;  5% protection
-        _put(strike=390.0, bid=1.49, ask=1.51),  # mid 1.50;  2.5% protection
-        _put(strike=395.0, bid=1.99, ask=2.01),  # mid 2.00;  1.25% protection
+        _put(strike=360.0, bid=0.495, ask=0.505),  # mid 0.50; 10% protection
+        _put(strike=370.0, bid=0.795, ask=0.805),  # mid 0.80;  7.5% protection
+        _put(strike=380.0, bid=0.995, ask=1.005),  # mid 1.00;  5% protection
+        _put(strike=390.0, bid=1.495, ask=1.505),  # mid 1.50;  2.5% protection
+        _put(strike=395.0, bid=1.995, ask=2.005),  # mid 2.00;  1.25% protection
         # CALLs — upside caps; higher strikes = more room.
-        _call(strike=405.0, bid=3.99, ask=4.01),  # mid 4.00
-        _call(strike=410.0, bid=2.99, ask=3.01),  # mid 3.00
-        _call(strike=420.0, bid=0.99, ask=1.01),  # mid 1.00
-        _call(strike=430.0, bid=0.39, ask=0.41),  # mid 0.40
-        _call(strike=440.0, bid=0.14, ask=0.16),  # mid 0.15
+        _call(strike=405.0, bid=3.995, ask=4.005),  # mid 4.00
+        _call(strike=410.0, bid=2.995, ask=3.005),  # mid 3.00
+        _call(strike=420.0, bid=0.995, ask=1.005),  # mid 1.00
+        _call(strike=430.0, bid=0.395, ask=0.405),  # mid 0.40
+        _call(strike=440.0, bid=0.145, ask=0.155),  # mid 0.15
     )
     return ChainSnapshot(
         underlying="MSFT",
