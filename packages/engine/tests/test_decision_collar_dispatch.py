@@ -18,7 +18,7 @@ and the M1.11a retrospective recommendations:
 
 from __future__ import annotations
 
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 
 import pytest
 
@@ -50,7 +50,7 @@ from engine.types import ChainSnapshot, OptionContract, OptionType
 
 _SPOT = 400.0
 _AS_OF_DATE = date(2026, 5, 20)
-_AS_OF_DT = datetime(2026, 5, 20, 14, 30, tzinfo=timezone.utc)
+_AS_OF_DT = datetime(2026, 5, 20, 14, 30, tzinfo=UTC)
 _EXPIRY = date(2026, 6, 19)
 
 
