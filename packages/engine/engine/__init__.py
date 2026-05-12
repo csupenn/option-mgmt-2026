@@ -11,6 +11,12 @@ M0.6 ships only the type vocabulary. Scoring + decision functions land in M1+.
 
 from __future__ import annotations
 
+from engine.collar_builder import (
+    CollarIntent,
+    CollarLeg,
+    CollarStructure,
+    build as build_collar,
+)
 from engine.confidence import (
     DEFAULT_WEIGHTS,
     ConfidenceBreakdown,
@@ -105,6 +111,9 @@ __all__ = [
     "Action",
     "Bias",
     "ChainSnapshot",
+    "CollarIntent",
+    "CollarLeg",
+    "CollarStructure",
     "ConfidenceBreakdown",
     "ConfidenceInputs",
     "EmittedAction",
@@ -141,6 +150,7 @@ __all__ = [
     "Weights",
     "__version__",
     "assess",
+    "build_collar",
     "classify",
     "compose",
     "compute",
