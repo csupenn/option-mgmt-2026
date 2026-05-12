@@ -16,18 +16,26 @@ def test_engine_version_bumped_to_1_5_0() -> None:
     assert engine.__version__ == "1.5.0"
 
 
-def test_collar_builder_exports_via_engine_namespace() -> None:
-    """`from engine import CollarIntent, CollarLeg, CollarStructure, build_collar`
-    must succeed — these are the public surface promised by the dev spec."""
+def test_collar_builder_types_exported_via_engine_namespace() -> None:
+    """`CollarIntent`, `CollarLeg`, `CollarStructure` are reachable
+    from the engine top level. `build()` itself stays namespaced
+    under `engine.collar_builder` to avoid colliding with the
+    generic verb at the top level."""
     assert engine.CollarIntent is CollarIntent
     assert engine.CollarLeg is CollarLeg
     assert engine.CollarStructure is CollarStructure
-    assert engine.build_collar is build
 
 
-def test_collar_builder_in_engine_all() -> None:
-    """The four collar_builder symbols are in `engine.__all__`."""
-    expected = {"CollarIntent", "CollarLeg", "CollarStructure", "build_collar"}
+def test_build_is_importable_from_collar_builder_module() -> None:
+    """The submodule entry point is `engine.collar_builder.build`."""
+    from engine.collar_builder import build as build_from_module
+
+    assert build_from_module is build
+
+
+def test_collar_builder_types_in_engine_all() -> None:
+    """The three collar_builder types are in `engine.__all__`."""
+    expected = {"CollarIntent", "CollarLeg", "CollarStructure"}
     assert expected.issubset(set(engine.__all__))
 
 

@@ -19,7 +19,7 @@ Frozen dataclasses per [ADR-0005](../../decisions/0005-engine-pure-function-disc
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date
 from enum import StrEnum
 from typing import Literal

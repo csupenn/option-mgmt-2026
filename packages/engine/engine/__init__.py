@@ -15,7 +15,6 @@ from engine.collar_builder import (
     CollarIntent,
     CollarLeg,
     CollarStructure,
-    build as build_collar,
 )
 from engine.confidence import (
     DEFAULT_WEIGHTS,
@@ -150,7 +149,6 @@ __all__ = [
     "Weights",
     "__version__",
     "assess",
-    "build_collar",
     "classify",
     "compose",
     "compute",
