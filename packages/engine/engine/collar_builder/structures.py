@@ -41,9 +41,15 @@ from engine.types import ChainSnapshot, OptionContract, OptionType
 from .leg_factory import make_long_put, make_short_call
 from .types import CollarIntent, CollarStructure
 
-# Liquidity floors — match M1.7 / M1.11 conventions.
-MIN_LIQUIDITY_SCORE = 0.5
-MIN_FILL_CONFIDENCE = 0.5
+# Liquidity floors — V1 calibration. The M1.7 / M1.11 downgrade
+# threshold sits at 0.50; our **filter** threshold is intentionally
+# slightly lower (0.40) so the solver doesn't degenerate to empty on
+# narrow-but-passable chains. M1.11's per-aggregate downgrade callback
+# (M1.12 ladder) is the production safety net at 0.50 — we surface
+# pairs above 0.40 here and let downgrades handle the marginal ones.
+# Phase 4 / ME calibration may re-tighten this to 0.50.
+MIN_LIQUIDITY_SCORE = 0.4
+MIN_FILL_CONFIDENCE = 0.4
 
 # Intent-specific short-call deltas. The profile doesn't currently
 # expose `delta_target_band` (see dev spec §"Profile field mapping"),
