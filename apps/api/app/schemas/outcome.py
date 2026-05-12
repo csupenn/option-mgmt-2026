@@ -32,7 +32,6 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
 # ----------------------------------------------------------------------
 # Enum literals — mirror the Postgres enum types from 0001_init.py
 # ----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-"""positions + option_positions: composite UNIQUE for CSV upsert idempotency
+r"""positions + option_positions: composite UNIQUE for CSV upsert idempotency
 
 Revision ID: 0003_imp_unique_constraints
 Revises: 0002_dd_unique_user_hash

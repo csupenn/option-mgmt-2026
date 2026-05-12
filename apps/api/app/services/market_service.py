@@ -40,8 +40,14 @@ from typing import Any
 
 from engine.market_state import (
     compute_max_pain,
+)
+from engine.market_state import (
     expected_move_pct as compute_expected_move_pct,
+)
+from engine.market_state import (
     pcr_oi as compute_pcr_oi,
+)
+from engine.market_state import (
     pcr_volume as compute_pcr_volume,
 )
 from engine.types import OptionContract, OptionType
@@ -49,7 +55,6 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.market import DataFreshness, MarketLatestSnapshotResponse
-
 
 # §22.10 staleness thresholds
 _CHAIN_STALE_SECONDS = 7200          # 2h
@@ -124,7 +129,7 @@ async def get_market_latest_snapshot(
 
     # 3. Build engine OptionContract list + derive spot.
     contracts: list[OptionContract] = []
-    expiries_present: set = set()
+    expiries_present: set[Any] = set()
     for r in rows:
         expiry, strike, kind, bid, ask, last_, mark, oi, volume, iv, delta, gamma, theta, vega, _ = r
         expiries_present.add(expiry)

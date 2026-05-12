@@ -15,8 +15,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import AsyncIterator
-from datetime import date, datetime, timedelta, timezone
-from typing import Any
+from datetime import date, datetime, timedelta
 
 import httpx
 import psycopg
@@ -84,7 +83,8 @@ def db_setup() -> AsyncIterator[None]:
 
 @pytest.fixture
 def auth_headers() -> dict[str, str]:
-    from datetime import UTC, timedelta as _td
+    from datetime import UTC
+    from datetime import timedelta as _td
 
     from jose import jwt
 

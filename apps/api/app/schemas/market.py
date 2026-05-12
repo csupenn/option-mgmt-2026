@@ -26,6 +26,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from decimal import Decimal
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -63,7 +64,7 @@ class MarketLatestSnapshotResponse(BaseModel):
     max_pain: Decimal | None = None
     pcr_volume: float | None = Field(default=None, ge=0.0)
     pcr_oi: float | None = Field(default=None, ge=0.0)
-    next_event: dict | None = None
+    next_event: dict[str, Any] | None = None
     data_freshness: DataFreshness
 
 

@@ -29,6 +29,7 @@ from __future__ import annotations
 import base64
 import json
 from datetime import datetime
+from typing import Any
 from uuid import UUID
 
 from sqlalchemy import text
@@ -39,7 +40,6 @@ from app.schemas.outcome import (
     OutcomePatchRequest,
     OutcomeResponse,
 )
-
 
 # ----------------------------------------------------------------------
 # Cursor encoding (opaque to callers)
@@ -75,7 +75,7 @@ _OUTCOME_COLUMNS = (
 )
 
 
-def _row_to_response(row: tuple) -> OutcomeResponse:
+def _row_to_response(row: tuple[Any, ...]) -> OutcomeResponse:
     return OutcomeResponse(
         id=row[0],
         daily_decision_id=row[1],

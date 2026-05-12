@@ -40,7 +40,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.data_import import CsvImportError, CsvImportResponse
 
-
 # ----------------------------------------------------------------------
 # Generic helpers
 # ----------------------------------------------------------------------
@@ -96,8 +95,7 @@ def _read_csv_rows(file_bytes: bytes) -> Iterable[tuple[int, dict[str, str]]]:
     starts at line 2."""
     text_data = file_bytes.decode("utf-8-sig")  # tolerate BOM
     reader = csv.DictReader(io.StringIO(text_data))
-    for line_idx, row in enumerate(reader, start=2):
-        yield line_idx, row
+    yield from enumerate(reader, start=2)
 
 
 # ----------------------------------------------------------------------
@@ -118,16 +116,32 @@ async def import_positions(
     for line, row in _read_csv_rows(file_bytes):
         ticker, err = _parse_required_str(row.get("ticker", ""), "ticker", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         qty, err = _parse_required_decimal(row.get("qty", ""), "qty", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         avg_cost, err = _parse_required_decimal(row.get("avg_cost", ""), "avg_cost", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         opened_at, err = _parse_required_str(row.get("opened_at", ""), "opened_at", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
 
         result = await session.execute(
             text(
@@ -181,36 +195,72 @@ async def import_option_positions(
         # Required strings
         ticker, err = _parse_required_str(row.get("ticker", ""), "ticker", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         side, err = _parse_required_str(row.get("side", ""), "side", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         kind, err = _parse_required_str(row.get("kind", ""), "kind", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
 
         if side not in ("BUY", "SELL"):
             errors.append(CsvImportError(line=line, column="side", message=f"must be BUY or SELL; got {side!r}"))
-            skipped += 1; continue
+            skipped += 1
+
+            continue
         if kind not in ("PUT", "CALL"):
             errors.append(CsvImportError(line=line, column="kind", message=f"must be PUT or CALL; got {kind!r}"))
-            skipped += 1; continue
+            skipped += 1
+
+            continue
 
         strike, err = _parse_required_decimal(row.get("strike", ""), "strike", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         expiry, err = _parse_required_str(row.get("expiry", ""), "expiry", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         qty, err = _parse_required_int(row.get("qty", ""), "qty", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         opened_at, err = _parse_required_str(row.get("opened_at", ""), "opened_at", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         opened_price, err = _parse_required_decimal(row.get("opened_price", ""), "opened_price", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
 
         status = (row.get("status", "OPEN") or "OPEN").strip()
 
@@ -280,27 +330,49 @@ async def import_chain(
     """
     inserted = skipped = 0
     errors: list[CsvImportError] = []
-    seen_in_csv: set[tuple] = set()
+    seen_in_csv: set[tuple[Any, ...]] = set()
 
     for line, row in _read_csv_rows(file_bytes):
         ticker, err = _parse_required_str(row.get("ticker", ""), "ticker", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         fetched_at, err = _parse_required_str(row.get("fetched_at", ""), "fetched_at", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         expiry, err = _parse_required_str(row.get("expiry", ""), "expiry", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         strike, err = _parse_required_decimal(row.get("strike", ""), "strike", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         kind, err = _parse_required_str(row.get("kind", ""), "kind", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         if kind not in ("PUT", "CALL"):
             errors.append(CsvImportError(line=line, column="kind", message=f"must be PUT or CALL; got {kind!r}"))
-            skipped += 1; continue
+            skipped += 1
+
+            continue
 
         natural_key = (ticker, fetched_at, expiry, str(strike), kind)
         if natural_key in seen_in_csv:
@@ -403,10 +475,18 @@ async def import_iv_history(
     for line, row in _read_csv_rows(file_bytes):
         ticker, err = _parse_required_str(row.get("ticker", ""), "ticker", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         ts, err = _parse_required_str(row.get("ts", ""), "ts", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
 
         atm_iv_30d, _ = _parse_decimal(row.get("atm_iv_30d", ""), "atm_iv_30d", line)
         atm_iv_60d, _ = _parse_decimal(row.get("atm_iv_60d", ""), "atm_iv_60d", line)
@@ -453,6 +533,8 @@ async def import_iv_history(
             inserted += 1
         else:
             updated += 1
+        # `ticker` was validated above (early-return on None); narrow for mypy.
+        assert ticker is not None
         tickers_touched.add(ticker)
 
     # §22.12 post-insert count check
@@ -505,7 +587,7 @@ async def import_events(
     at upload time — no DB-level UNIQUE constraint."""
     inserted = skipped = 0
     errors: list[CsvImportError] = []
-    seen_in_csv: set[tuple] = set()
+    seen_in_csv: set[tuple[Any, ...]] = set()
 
     valid_kinds = {
         "earnings", "fomc", "build", "launch",
@@ -519,16 +601,30 @@ async def import_events(
 
         kind, err = _parse_required_str(row.get("kind", ""), "kind", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         if kind not in valid_kinds:
             errors.append(CsvImportError(line=line, column="kind", message=f"must be one of {sorted(valid_kinds)}; got {kind!r}"))
-            skipped += 1; continue
+            skipped += 1
+
+            continue
         scheduled_at, err = _parse_required_str(row.get("scheduled_at", ""), "scheduled_at", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         source, err = _parse_required_str(row.get("source", ""), "source", line)
         if err is not None:
-            errors.append(err); skipped += 1; continue
+            errors.append(err)
+
+            skipped += 1
+
+            continue
         notes = (row.get("notes", "") or "").strip() or None
 
         natural_key = (ticker, kind, scheduled_at, source)

@@ -47,9 +47,9 @@ AuthedUserDep = Annotated[str, Depends(get_authenticated_user_id)]
 async def list_outcomes_endpoint(
     session: SessionDep,
     user_id: AuthedUserDep,
-    since: datetime | None = Query(default=None, description="ISO datetime; filters out older outcomes"),
-    limit: int = Query(default=50, ge=1, le=200),
-    cursor: str | None = Query(default=None, description="Opaque cursor from a previous response's `next_cursor`"),
+    since: Annotated[datetime | None, Query(description="ISO datetime; filters out older outcomes")] = None,
+    limit: Annotated[int, Query(ge=1, le=200)] = 50,
+    cursor: Annotated[str | None, Query(description="Opaque cursor from a previous response's `next_cursor`")] = None,
 ) -> OutcomeListResponse:
     try:
         outcomes, next_cursor = await list_outcomes(
