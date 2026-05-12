@@ -76,11 +76,22 @@ async def put_profile_endpoint(
     session: SessionDep,
     user_id: AuthedUserDep,
 ) -> ProfileResponse:
-    """Full replacement (PUT semantics, not PATCH). Pydantic validation
-    enforces all §9.9 range constraints at the request boundary."""
+    """Full replacement (PUT semantics, not PATCH).
+
+    `ProfileUpdateRequest` enforces `extra="forbid"` at the API boundary
+    — unknown fields raise 422 BEFORE the handler runs, so typos like
+    `max_postion_pct` are caught loudly rather than silently dropped.
+    Pydantic also enforces all §9.9 range constraints at the request
+    boundary.
+
+    `.to_engine()` projects to the engine's `UserStrategyProfile`
+    (which has the same fields but `extra=ignore` for forward-compat
+    with future engine additions).
+    """
     try:
+        engine_profile = request.to_engine()
         return await replace_profile(
-            session=session, user_id=user_id, profile=request
+            session=session, user_id=user_id, profile=engine_profile
         )
     except ValueError as exc:
         # user_id doesn't exist in `users` table — shouldn't happen for an

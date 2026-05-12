@@ -99,7 +99,10 @@ def test_put_profile_invalid_risk_tolerance_returns_422(
 def test_put_profile_extra_field_rejected(
     client: TestClient, auth_headers: dict[str, str]
 ) -> None:
-    """UserStrategyProfile rejects unknown fields (Pydantic strict)."""
+    """ProfileUpdateRequest has `extra="forbid"`; typos raise 422 before
+    the handler runs (so no DB access). The engine's UserStrategyProfile
+    deliberately allows extras for forward-compat, but the API boundary
+    is stricter — see app/schemas/profile.py docstring."""
     body = _profile_payload()
     body["some_extra_field"] = "rejected"
     r = client.put("/api/v1/profile", json=body, headers=auth_headers)
@@ -271,16 +274,19 @@ def test_import_chain_invalid_kind_skips_row(
 # ----------------------------------------------------------------------
 # /market/{ticker}/latest
 # ----------------------------------------------------------------------
-
-
-def test_market_latest_returns_422_on_missing_data(
-    client: TestClient,
-) -> None:
-    """With no chain rows + no iv_history (unit-test no-DB or empty DB),
-    /market/MSFT/latest returns 422 per §22.10. We accept either 422 or
-    500 depending on whether DB is reachable."""
-    r = client.get("/api/v1/market/MSFT/latest")
-    assert r.status_code in (422, 500), r.text
+#
+# The /market/{ticker}/latest endpoint is unavoidably DB-dependent (its
+# entire purpose is to read chain/iv/hv/events rows). Starlette
+# TestClient defaults to `raise_server_exceptions=True`, which re-raises
+# any unhandled exception inside the route into the test rather than
+# returning a 500 response — so unit-testing against a no-DB sandbox
+# would crash the test with the underlying SQLAlchemy connection error.
+#
+# The §22.10 422 contract is therefore validated in the smoke suite
+# (`tests/test_smoke_m1_17.py::test_market_latest_after_seeding_smoke` +
+# its inverse for `insufficient_iv_history`) against the real Postgres
+# the CI smoke job provisions. Unit tests below only cover routes whose
+# 401 / 422 paths fire BEFORE the session dependency is exercised.
 
 
 # ----------------------------------------------------------------------
