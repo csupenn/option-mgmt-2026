@@ -182,10 +182,14 @@ def _confidence_inputs(
     # Structure: closer-to-pin is better.
     structure_alignment = max(0.0, 1.0 - abs(market_state.max_pain_delta_pct) * 5.0)
 
-    # Regime match.
+    # Regime match. The 6 canonical regimes per ADR-0002 / §9.1 are
+    # HIGH_IV_EVENT, HIGH_IV_PIN, LOW_IV_TREND, LOW_IV_RANGE, BREAKOUT,
+    # POST_EVENT_REPRICE. Collars fit best when there's downside risk
+    # (events, pins) or active vol; least useful in clean directional
+    # regimes (TREND, BREAKOUT) where uncapped upside matters more.
     if market_state.regime in (Regime.HIGH_IV_EVENT, Regime.POST_EVENT_REPRICE):
         regime_match = 0.9
-    elif market_state.regime in (Regime.RANGE_BOUND_LOW_IV, Regime.RANGE_BOUND_HIGH_IV):
+    elif market_state.regime in (Regime.HIGH_IV_PIN, Regime.LOW_IV_RANGE):
         regime_match = 0.6
     else:
         regime_match = 0.4
