@@ -251,7 +251,7 @@ class TestCollarBuilderErrors:
             headers=auth_headers,
         )
         assert resp.status_code == 422
-        assert "insufficient_shares" in resp.json()["detail"]
+        assert "insufficient_shares" in resp.json()["title"]
 
     @patch("app.routers.engine.run_collar_builder")
     def test_missing_chain_422(
@@ -268,7 +268,7 @@ class TestCollarBuilderErrors:
             headers=auth_headers,
         )
         assert resp.status_code == 422
-        assert "missing_chain" in resp.json()["detail"]
+        assert "missing_chain" in resp.json()["title"]
 
     def test_unsupported_ticker_extra_field_rejected(
         self,
