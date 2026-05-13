@@ -15,7 +15,8 @@ Per plan v1.2 §7, §9.10 (Collar Builder), §22.11 H5, M1.16a dev spec.
 
 from __future__ import annotations
 
-from engine.collar_builder import build, CollarStructure as EngineCollarStructure
+from engine.collar_builder import CollarStructure as EngineCollarStructure
+from engine.collar_builder import build
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
