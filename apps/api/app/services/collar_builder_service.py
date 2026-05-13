@@ -15,17 +15,11 @@ Per plan v1.2 §7, §9.10 (Collar Builder), §22.11 H5, M1.16a dev spec.
 
 from __future__ import annotations
 
+from engine.collar_builder import build, CollarStructure as EngineCollarStructure
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from engine.collar_builder import build, CollarIntent, CollarStructure as EngineCollarStructure
-
 from app.schemas.engine import CollarBuilderRequest, CollarStructureResponse
-
-# Private hydration helpers from the M1.17.5 service.
-# These are shared DB-read helpers within the app.services package —
-# importing them here avoids duplicating ~200 lines of chain + market-state
-# hydration logic.  They are stable (no changes expected in Phase 1).
 from app.services.inputs_hydration_service import (  # noqa: PLC2701
     _hydrate_chain_snapshot,
     _hydrate_flow_score,

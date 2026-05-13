@@ -48,7 +48,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Any, Literal
 
-from engine.collar_builder import CollarIntent, CollarStructure as _EngineCollarStructure
+from engine.collar_builder import CollarIntent
 from engine.flow_score.types import Bias, FlowScore, RecommendedAction
 from engine.market_state.classify import MarketStateResult
 from engine.recommendation.types import PositionState
@@ -357,7 +357,7 @@ class CollarStructureResponse(BaseModel):
     score: float = 0.0
 
     @classmethod
-    def from_engine(cls, s: Any) -> "CollarStructureResponse":
+    def from_engine(cls, s: Any) -> CollarStructureResponse:
         """Project an engine `CollarStructure` frozen dataclass → this model.
 
         Uses `to_jsonable()` for nested dataclasses (`confidence_breakdown`,
